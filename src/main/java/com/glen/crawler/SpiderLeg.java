@@ -156,8 +156,8 @@ public class SpiderLeg
         String bodyText="";
         try{
        //bodyText = this.htmlDocument.body().getElementById("mw-content-text").text(); //.getElementsByAttributeValueContaining("div","story-body-text story-content").text();mw-content-text
-        //bodyText = this.htmlDocument.body().getElementsByTag("LI").text();
-        	bodyText = this.htmlDocument.body().getElementsByTag("DIV").text();
+        bodyText = this.htmlDocument.body().getElementsByTag("LI").text();
+        //	bodyText = this.htmlDocument.body().getElementsByTag("DIV").text();
    
         }catch (Exception e)
         {e.printStackTrace();}
@@ -188,7 +188,7 @@ public class SpiderLeg
       int count=0;
       for (String sentence : sentenceList) {
     	  count++;
-         System.out.println(sentence);
+       //  System.out.println(sentence);
          returnPhrases.add(sentence);
          if(count>500){break;}
       }

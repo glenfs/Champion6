@@ -62,7 +62,7 @@ public class Indexer {
     
     public void rebuildIndexes(String inputFile) throws IOException {
     	  String line = null;
-    	
+    	  System.out.println(inputFile);
     	  FileReader fr = null;
 
           try {
@@ -79,11 +79,9 @@ public class Indexer {
             	  Document doc = new Document();
             	 
             	 if(!line.trim().equals("")){
-            	  String[] dataField=line.split(",");
-            	  
-        		 // doc.add(new StringField ("ipA", ipField[0], Field.Store.YES));
-          		doc.add(new StringField ("word",  dataField[0].trim(), Field.Store.YES));
-              	doc.add(new StringField("sentences",dataField[1],Field.Store.YES));
+            	  String[] dataField=line.split("\\t");
+          			doc.add(new StringField ("word",  dataField[0].trim(), Field.Store.YES));
+          			doc.add(new StringField("sentences",dataField[1],Field.Store.YES));
             	  writer.addDocument(doc);
             	 }
               }    

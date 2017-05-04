@@ -35,6 +35,7 @@ public class GenericIndexer {
         	ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors
     				.newCachedThreadPool();
     		File dir = new File(inputPath);
+    		
     		File[] directoryListing = dir.listFiles();
     			if (directoryListing != null) {
     			for (File child : directoryListing) {
@@ -45,7 +46,6 @@ public class GenericIndexer {
     		}
     		executor.shutdown();
     		executor.awaitTermination(3, TimeUnit.HOURS);
-      
     		indexer.closeIndexWriter();
       	} catch (Exception e) {
     	  e.printStackTrace();
@@ -56,10 +56,11 @@ public class GenericIndexer {
     
     public static void main(String[] args)
     {
+    	System.out.println("Starting the process");
     	String inputPath=args[0];
     	String outputPath=args[1];
-    	
-    	
+    	System.out.println(inputPath);
+    	System.out.println(outputPath);
     	
     	runIndexer(inputPath,outputPath);
     }

@@ -51,11 +51,14 @@ Spider()
    */
   public void search(String url, String searchWord)
   {
+	    SpiderLeg  leg;
 	  System.out.println("search called.");
      while(this.pagesVisited.size() < MAX_PAGES_TO_SEARCH)
       {
+    	 leg=null;
+    	 leg = new SpiderLeg();
           String currentUrl = null;
-          SpiderLeg leg = new SpiderLeg();
+        
           if(this.pagesToVisit.isEmpty())
           {
               currentUrl = url;
@@ -94,7 +97,7 @@ Spider()
     
       try {
 		fw.close();
-		  bw.close();
+		bw.close();
 	} catch (IOException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
