@@ -18,13 +18,13 @@ public class SpiderTest
 				.newCachedThreadPool();
     	SpiderRunnable runner1=new SpiderRunnable("https://en.wikiquote.org/wiki/List_of_literary_works","literary.txt");
 		executor.execute(runner1);
-		SpiderRunnable runner1a=new SpiderRunnable("https://en.wikiquote.org/wiki/List_of_Manga/Anime_shows_in_English","mangaAnime.txt");
+			SpiderRunnable runner1a=new SpiderRunnable("https://en.wikiquote.org/wiki/List_of_Manga/Anime_shows_in_English","mangaAnime.txt");
 		executor.execute(runner1a);
 		
 		SpiderRunnable runner2=new SpiderRunnable("https://en.wikiquote.org/wiki/List_of_people_by_name","peopleQuotes.txt");
 		executor.execute(runner2);
 		
-			SpiderRunnable runner2a=new SpiderRunnable("https://en.wikiquote.org/wiki/List_of_radio_shows","radioShows.txt");
+		SpiderRunnable runner2a=new SpiderRunnable("https://en.wikiquote.org/wiki/List_of_radio_shows","radioShows.txt");
 		executor.execute(runner2a);
 		
 		SpiderRunnable runner3=new SpiderRunnable("https://en.wikiquote.org/wiki/List_of_films_(A%E2%80%93C)","films.txt");

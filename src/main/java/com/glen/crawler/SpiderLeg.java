@@ -91,7 +91,7 @@ public class SpiderLeg
     {
     	connection=null;
     	htmlDocument=null;
-    	System.out.println("Crawl Called");
+    //	System.out.println("Crawl Called on-"+url);
         try
         {
         	try {
@@ -149,7 +149,7 @@ public class SpiderLeg
      */
     public boolean searchForWord(String searchWord)
     {
-    	 System.out.println("this.links.size()->"+this.links.size());
+    	// System.out.println("this.links.size()->"+this.links.size());
     	 returnPhrases= new ArrayList<String>();
         // Defensive coding. This method should only be used after a successful crawl.
         if(this.htmlDocument == null)

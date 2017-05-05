@@ -22,7 +22,7 @@ public class SentenceToWordMapper  extends Mapper<LongWritable, Text, Text, Text
 		
 		for(String word: words)
 		{
-			outKey.set(word);
+			outKey.set(word.trim().toLowerCase());
 			context.write(outKey, value);
 		}
 	}

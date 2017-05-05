@@ -104,6 +104,15 @@ Spider()
           String input;
           for(String s: leg.getReturnPhrases())
           {
+        	  try {
+          		//  System.out.println(s);
+          		 if(s.matches(".*\\d+.*") || s.split(" ").length<=4 || s.split(" ").length>=20 ||s.contains("-LRB-") ||s.contains("-RRB-")
+          				 ||s.contains("Creative Commons Attribution") ||s.contains("wiki"))
+          		 {
+          			 continue;
+          		 }
+          		 s=s.replaceAll("`", "");
+        	  //  System.out.println(s);
         		input=s;
    	    	 	edu.stanford.nlp.pipeline.Annotation annotation = pipeline.process(input);
    	    	 	List<CoreMap> sentences = annotation.get(CoreAnnotations.SentencesAnnotation.class);
@@ -118,20 +127,12 @@ Spider()
    	    	 		}
    	    	 	}
         	  if(output.size()==0){continue;}
-        	  
-        	  try {
-        		//  System.out.println(s);
-        		 if(s.matches(".*\\d+.*") || s.split(" ").length<=4 || s.split(" ").length>=20 )
-        		 {
-        			 continue;
-        		 }
-        		 
-        		 
-        		 s=s.replaceAll("`", "");
+        	  //System.out.println(output);
+        		
 				bw.write(s.replaceAll("(\\t|\\r?\\n)+", " "));
 				bw.newLine();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				System.out.println("Exception String:"+s);
 				e.printStackTrace();
 			}  
           }
