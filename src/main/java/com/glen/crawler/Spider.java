@@ -6,10 +6,19 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
+
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.ling.tokensregex.TokenSequenceMatcher;
+import edu.stanford.nlp.ling.tokensregex.TokenSequencePattern;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.util.CoreMap;
 
 public class Spider
 {
@@ -19,15 +28,18 @@ public class Spider
   private File file;
   private FileWriter fw=null;
   private	BufferedWriter bw = null;
-	
+  private String fileName;
+  String regex;
+  StanfordCoreNLP pipeline;
   public BufferedWriter getBw() {
 	return bw;
 }
 
 Spider()
   {
+	pipeline = POSTag.getInstance().getPipeline();
 	file = new File("C:\\Ford\\OutputFromCrawl.txt");
-		
+	regex = "([{pos:/VB|JJ|JJR|JJS/}])";
 	try {
 		if (!file.exists()) {
 			file.createNewFile();
@@ -39,6 +51,24 @@ Spider()
 		e.printStackTrace();
 	}
   }
+
+	Spider(String fName)
+	{
+		fileName=fName;
+		pipeline = POSTag.getInstance().getPipeline();
+		file = new File(fileName);
+		regex = "([{pos:/VB|JJ|JJR|JJS/}])";
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			fw = new FileWriter(file.getAbsoluteFile());
+			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file.getAbsoluteFile()),"UTF-8"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
   /**
    * Our main launching point for the Spider's functionality. Internally it creates spider legs
@@ -71,14 +101,32 @@ Spider()
           leg.crawl(currentUrl); // Lots of stuff happening here. Look at the crawl method in
                                  // SpiderLeg
           boolean success = leg.searchForWord(searchWord);
+          String input;
           for(String s: leg.getReturnPhrases())
           {
+        		input=s;
+   	    	 	edu.stanford.nlp.pipeline.Annotation annotation = pipeline.process(input);
+   	    	 	List<CoreMap> sentences = annotation.get(CoreAnnotations.SentencesAnnotation.class);
+   	    	 	List<String> output = new ArrayList<>();
+   	    	 	String regex = "([{pos:/VB|JJ|JJR|JJS/}])"; //Noun
+   	    	 	for (CoreMap sentence : sentences) {
+   	    	 		List<CoreLabel> tokens = sentence.get(CoreAnnotations.TokensAnnotation.class);
+   	    	 		TokenSequencePattern pattern = TokenSequencePattern.compile(regex);
+   	    	 		TokenSequenceMatcher matcher = pattern.getMatcher(tokens);
+   	    	 		while (matcher.find()) {
+   	    	 			output.add(matcher.group());
+   	    	 		}
+   	    	 	}
+        	  if(output.size()==0){continue;}
+        	  
         	  try {
         		//  System.out.println(s);
         		 if(s.matches(".*\\d+.*") || s.split(" ").length<=4 || s.split(" ").length>=20 )
         		 {
         			 continue;
         		 }
+        		 
+        		 
         		 s=s.replaceAll("`", "");
 				bw.write(s.replaceAll("(\\t|\\r?\\n)+", " "));
 				bw.newLine();

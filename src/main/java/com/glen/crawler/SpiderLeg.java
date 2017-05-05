@@ -44,8 +44,15 @@ import edu.stanford.nlp.process.DocumentPreprocessor;
 
 public class SpiderLeg
 {
-	
-	 public static void enableSSLSocket() throws KeyManagementException, NoSuchAlgorithmException {
+    // We'll use a fake USER_AGENT so the web server thinks the robot is a normal web browser.
+    private static final String USER_AGENT =
+            "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1";
+    private List<String> links = new LinkedList<String>();
+    private Document htmlDocument;
+    private List<String> returnPhrases=null;
+    private  Connection connection;
+    
+	public static void enableSSLSocket() throws KeyManagementException, NoSuchAlgorithmException {
 	        HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
 	            public boolean verify(String hostname, SSLSession session) {
 	                return true;
@@ -66,13 +73,7 @@ public class SpiderLeg
 	        }}, new SecureRandom());
 	        HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
 	    }
-	 
-    // We'll use a fake USER_AGENT so the web server thinks the robot is a normal web browser.
-    private static final String USER_AGENT =
-            "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1";
-    private List<String> links = new LinkedList<String>();
-    private Document htmlDocument;
-    private List<String> returnPhrases=null;
+
     public List<String> getReturnPhrases() {
 		return returnPhrases;
 	}
@@ -88,6 +89,8 @@ public class SpiderLeg
      */
     public boolean crawl(String url)
     {
+    	connection=null;
+    	htmlDocument=null;
     	System.out.println("Crawl Called");
         try
         {
@@ -100,10 +103,11 @@ public class SpiderLeg
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-            Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
-            		
-            Document htmlDocument = connection.get();
+            connection = Jsoup.connect(url).userAgent(USER_AGENT);
+ 
+            htmlDocument = connection.get();
             this.htmlDocument = htmlDocument;
+          
            // System.out.println("htmlDocument set-"+htmlDocument.title());
             if(connection.response().statusCode() == 200) // 200 is the HTTP OK status code
                                                           // indicating that everything is great.
@@ -122,10 +126,13 @@ public class SpiderLeg
             	//System.out.println(link);
                 this.links.add(link.absUrl("href"));
             }
+           
+         
             return true;
         }
-        catch(IOException ioe)
+        catch(IOException | java.lang.OutOfMemoryError ioe)
         {
+        	ioe.printStackTrace();
             // We were not successful in our HTTP request
             return false;
         }
@@ -151,7 +158,7 @@ public class SpiderLeg
             return false;
         }
        // System.out.println("Searching for the word " + searchWord + "...");
-        String bodyText2 = this.htmlDocument.body().text();
+      //  String bodyText2 = this.htmlDocument.body().text();
       //  String bodyText = this.htmlDocument.body().getElementsByAttributeValueContaining("class","story-body-text story-content").text();
         String bodyText="";
         try{
